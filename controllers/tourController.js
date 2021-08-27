@@ -1,4 +1,5 @@
 const fs = require('fs')
+const Tour = require('../models/tourModel')
 // const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
 const Tours  =  require('../models/tourModel')
 
@@ -28,54 +29,114 @@ exports.checkAddedTour = (req, res, next)=>{
     next()
 }
 
-exports.getAllTours  =(req, res)=>{
-    console.log(req.requestTime)
-    // res.status(200).json({
-    //     status: 'success',
-    //     results: tours.length,
-    //     data: {
-    //         tours: tours
-    //     }
-    // })
-}
-exports.getTour = (req, res)=>{
-    // console.log(req.params)
-    // const id = req.params.id
-    // const tour = tours.find(tour=> +tour.id=== +id)
-    // res.status(200).json({
-    //     status: 'success',
-    //     results: tours.length,
-    //     data: {
-    //         tours: tour
-    //     }
-    // })
-}
-exports.addTour = (req, res)=>{
-  
-    res.status(201).json({
+exports.getAllTours  = async (req, res)=>{
+
+    try{
+        const tours = await Tour.find()
+
+
+    res.status(200).json({
         status: 'success',
-        // data: {
-        //     tour: newTour
-        // }
+        results: tours.length,
+        data: {
+            tours: tours
+        }
     })
+
+    }catch(err){
+        res.status(400).json({
+            status: 'fail',
+            message: err
+        })
+       console.log(err)
+    }
+    
 }
-exports.updateTour = (req, res)=>{
+exports.getTour = async(req, res)=>{
+    console.log(req.params.id)
+   try{
+    const tour = await Tour.findById(req.params.id)
+    // alternative Tour.findOne({_id: req.params.id})
+
+console.log('tour ', tour)
+
     res.status(200).json({
         status: 'success',
         data: {
-            tour: 'Updated'
+            tour: tour
         }
     })
+   }catch(err){
+    res.status(400).json({
+        status: 'fail',
+        
+    })
+   }
+   
+}
+exports.addTour = async (req, res)=>{
+    // const newTour = new Tour({})
+    // newTour.save()  // or we can call create method directly to Tour  see below
+
+    // we need async function to await  creating new tour, alternative would be to use promises but this way is more convenient
+try{
+    const newTour = await Tour.create(req.body).then()
+
+    res.status(201).json({
+        status: 'success',
+        data: {
+            tour: newTour
+        }
+    })
+}catch (err){
+    res.status(400).json({
+        status: 'fail',
+        message: err
+    })
+    console.log(err)
+}
+};
+exports.updateTour = async (req, res)=>{
+    const updatedTour = req.body
+    try{
+        const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+            new: true   // to return updated document and not old one 
+        })
+        res.status(200).json({
+            status: 'success',
+            data: {
+                tour: updatedTour
+            }
+        })
+    }catch(err){
+
+        
+        res.status(400).json({
+            status: 'fail',
+            message: err
+        })
+    }
+
+
+   
 } 
 
-exports.deleteTour =(req, res)=>{
-    const arr= 'sadsad'
-    arr.
-    res.status(204).json({
-        status: 'success',
-    
-        data: {
-            data: null
-        }
-    })
+exports.deleteTour = async (req, res)=>{
+    try{
+     await Tour.findByIdAndDelete(req.params.id)
+     
+     res.status(204).json({
+         status: 'success',
+         data: {
+             data: null
+         }
+     })
+    }catch(err){
+        res.status(400).json({
+            status: 'fail',
+            message: err
+        })
+    }
+
+   
 }
