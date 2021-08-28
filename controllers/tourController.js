@@ -24,7 +24,6 @@ exports.checkAddedTour = (req, res, next)=>{
         })
 
     }
-    console.log('yes it is valid ', req.body)
 
     next()
 }
@@ -32,9 +31,44 @@ exports.checkAddedTour = (req, res, next)=>{
 exports.getAllTours  = async (req, res)=>{
 
     try{
-        const tours = await Tour.find()
+
+        // 1) filtering
+        const queryObj = {...req.query}
+        const excludedFields = ['page', 'sort', 'limit', 'fields'];
+        excludedFields.forEach(el=> delete queryObj[el]);
+
+        // advanced filtering
+       let queryStr = JSON.stringify(queryObj);
+       queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match=> `$${match}` )
 
 
+        console.log(JSON.parse(queryStr))
+        console.log(req.query, queryObj)
+
+
+        
+        // const tours = await Tour.find({  /#111
+        //     duration: 5,
+        //     difficulty: 'easy',
+        // })
+      
+        // const tours = await Tour.find().where('duration').equals(5).where('difficulty').equals('easy')
+
+
+    // create query
+   const query = Tour.find(JSON.parse(queryStr)) // query is same as #111
+
+    //{difficult: 'easy', duration: {$gte: 5}} // writing filter object greaterOrEqual  with native MongoDb
+
+
+    //{difficult: 'easy', duration: {gte: 5}} // writing filter object greaterOrEqual  with native MongoDb  'http://localhost:3000/api/v1/tours?duration[gte]=5&difficulty=easy&sort=2' response difference only $gte with dolad sign
+
+
+    //executed query
+   const tours = await query
+
+
+    //send response
     res.status(200).json({
         status: 'success',
         results: tours.length,
