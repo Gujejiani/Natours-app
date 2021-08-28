@@ -45,8 +45,6 @@ exports.getAllTours  = async (req, res)=>{
         console.log(JSON.parse(queryStr))
         console.log(req.query, queryObj)
 
-
-        
         // const tours = await Tour.find({  /#111
         //     duration: 5,
         //     difficulty: 'easy',
@@ -56,13 +54,25 @@ exports.getAllTours  = async (req, res)=>{
 
 
     // create query
-   const query = Tour.find(JSON.parse(queryStr)) // query is same as #111
+   let query = Tour.find(JSON.parse(queryStr)) // query is same as #111
+
+
+// 2) sorting
+
+if(req.query.sort){
+    const sortBy = req.query.sort.split(',').join(' ');
+        query = query.sort(sortBy)     // it's not javascript sort       'http://localhost:3000/api/v1/tours?sort=price' if descending order needed =-price
+        // sort('price' ratingsAverage) 
+}else{
+    query = query.sort('-createdAt -duration')
+}
+
+console.log('queryyyyyyy ', query)
+
 
     //{difficult: 'easy', duration: {$gte: 5}} // writing filter object greaterOrEqual  with native MongoDb
 
-
     //{difficult: 'easy', duration: {gte: 5}} // writing filter object greaterOrEqual  with native MongoDb  'http://localhost:3000/api/v1/tours?duration[gte]=5&difficulty=easy&sort=2' response difference only $gte with dolad sign
-
 
     //executed query
    const tours = await query
