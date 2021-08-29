@@ -68,11 +68,21 @@ if(req.query.sort){
 }
 
 console.log('queryyyyyyy ', query)
-
-
     //{difficult: 'easy', duration: {$gte: 5}} // writing filter object greaterOrEqual  with native MongoDb
 
     //{difficult: 'easy', duration: {gte: 5}} // writing filter object greaterOrEqual  with native MongoDb  'http://localhost:3000/api/v1/tours?duration[gte]=5&difficulty=easy&sort=2' response difference only $gte with dolad sign
+
+
+
+//. 3) field limiting   http://localhost:3000/api/v1/tours?fields=name,duration,difficulty,price     in every case we don't need to send whole data to the client
+    if(req.query.fields){
+        const fields =  req.query.fields.split(',').join(' ');;
+        // query = query.select('name duration price') and it only selects this tree fields and returns them                        man so damn cool 
+        query = query.select(fields)
+    }else{{
+        query = query.select('-__v') // mongoose send __v which is generated automatically  and we add - sign -__v than  it mongoose selects everything beside __v
+    }}
+
 
     //executed query
    const tours = await query
