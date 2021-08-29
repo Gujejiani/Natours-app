@@ -51,7 +51,8 @@ const tourSchema = new mongoose.Schema({
     images: [String],
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
+        select: false   // with this addition it will not go with all data to and user will not see it 
     },
     startDates: [Date],
 
