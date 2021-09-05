@@ -30,10 +30,12 @@ mongoose.connect(DB,{
 // })
 
 // console.log(process.env)
+const port = process.env.PORT
 app.listen('3000', ()=>{
-    console.log('server started ' + process.env.PORT)
+    console.log('server started ' + port)
 })
 
 
 
 
+// test

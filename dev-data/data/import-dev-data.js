@@ -29,7 +29,7 @@ const importData = async ()=>{
 try{
 
   await  Tour.create(tours)
-    console.log('data successfully')
+    console.log('data successfully imported')
 }catch(err){
     console.log(err)
 }

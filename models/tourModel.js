@@ -1,12 +1,18 @@
 
 const mongoose = require('mongoose')
+const slugify = require('slugify')
+const validator = require('validator')
 const tourSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'tour most have a name'], //,  we can give error message with array second element 
         unique: true,
-        trim: true, 
+        trim: true,
+        maxlength: [40, 'tour name must have less or equal characters'],
+        minlength: [1, 'name characters should be more than 1'],
+        // validate: [validator.isAlpha, "tour name should only contain characters"]
     },
+    slug: String,
     duration: {
         type: Number,
         default: 5,
@@ -18,12 +24,18 @@ const tourSchema = new mongoose.Schema({
     },
     difficulty: {
         type: String,
-        required: [true, 'Tour should have difficulty']
+        required: [true, 'Tour should have difficulty'],
+        // enum: { // works only on strings
+        //     values: ['easy', 'medium', 'hard'],
+        //     message:  'Difficulty is either: easy, medium, difficult'
+        // }
     },
     ratingAverage: {
             type: Number,
             default: 4.5,
-            required: true
+            required: true,
+            min: [1, 'rating muse  be above 1.0'],
+            max: [10, 'ratingAverage should be less than 1']
     
     },
     ratingQuantity: {
@@ -33,7 +45,16 @@ const tourSchema = new mongoose.Schema({
     
     },
     price: Number,
-    priceDiscount: Number,
+    priceDiscount: {
+        type: Number,
+        validate:{
+            validator: function(val){
+                // this only points  to current doc on new document creation
+                return val < this.price
+            },
+            message: 'Discount price  ({VALUE}) should be below regular price'
+        } 
+    },
     summary: {
         type: String,
         trim: true,  // removes all the white spaces  
@@ -52,12 +73,69 @@ const tourSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now(),
-        select: false   // with this addition it will not go with all data to and user will not see it 
+        select: false,   // with this addition it will not go with all data to and user will not see it 
     },
     startDates: [Date],
+    secretTour: {
+        type: Boolean,
+        default: false
+    }
 
+}, {
+    // to use virtual property which will not be saved in database because we can easily calculate from  properties which we have already
+    toJSON: {virtuals: true},
+    toObject: {virturls: true} 
 })
 
+tourSchema.virtual('durationWeeks').get(function(){
+    return +this.duration / 7
+})
+
+
+// mongoose middleware
+// this function will run when we save tours data into database                       p.s we need normal function because of this keyword
+tourSchema.pre('save', function(next){ //Document middleware  it runs before .save() and .create()  only
+ console.log(this)
+ this.slug = slugify(this.name, {lower: true})
+ next();
+})
+
+// tourSchema.pre('save', function(next){
+// console.log('we are saving document')
+// next()
+// })
+
+// tourSchema.post('save', function(doc, next){
+//     console.log(doc)
+//     next();
+// })
+
+/// query middleware              this keyword will  now target current query and not current document
+// tourSchema.pre('find', function(next){
+tourSchema.pre(/^find/, function(next){ // /^find/  with regular expression it will run every method which has find  like find, findOne  
+    // console.log(this)
+    // this.find({secretTour: {$ne: false} })
+    this.start = Date.now()
+    next()
+})
+
+// tourSchema.pre('findOne', function(next){
+//     console.log(this)
+//     this.find({secretTour: {$ne: false} })
+//     next()
+// })
+tourSchema.post(/^find/, function(docs, next){  // executing after  query search is done
+    console.log(`query took ${Date.now()- this.start}`)
+console.log(docs);
+next()
+});
+
+// AGGREGATION MIDDLEWARE
+tourSchema.pre('aggregate', function(next){
+    this.pipeline().unshift({$match: {secretTour: {$ne: true}}})
+    console.log(this.pipeline());
+    next()
+}) 
 const Tour = mongoose.model('Tours', tourSchema);
 
 module.exports = Tour
