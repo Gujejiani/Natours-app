@@ -126,14 +126,14 @@ tourSchema.pre(/^find/, function(next){ // /^find/  with regular expression it w
 // })
 tourSchema.post(/^find/, function(docs, next){  // executing after  query search is done
     console.log(`query took ${Date.now()- this.start}`)
-console.log(docs);
+// console.log(docs);
 next()
 });
 
 // AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function(next){
     this.pipeline().unshift({$match: {secretTour: {$ne: true}}})
-    console.log(this.pipeline());
+    // console.log(this.pipeline());
     next()
 }) 
 const Tour = mongoose.model('Tours', tourSchema);

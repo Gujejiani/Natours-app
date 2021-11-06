@@ -4,7 +4,6 @@ class APIFeatures {
         this.queryString = queryString
     }
 filter(){
-    console.log('xexe')
     const queryObj = {...this.queryString}
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach(el=> delete queryObj[el]);
@@ -20,7 +19,6 @@ filter(){
 }
 
 sort(){
-    console.log('xexeeee')
     if(this.queryString.sort){
         const sortBy = this.queryString.sort.split(',').join(' ');
             this.query = this.query.sort(sortBy)     // it's not javascript sort       'http://localhost:3000/api/v1/tours?sort=price' if descending order needed =-price
