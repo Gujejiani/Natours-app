@@ -57,6 +57,15 @@ userSchema.pre('save', async function(next){
     next();   
 })
 
+userSchema.pre('save', function(next){
+    if(!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 1000;
+
+    next()
+
+})
+
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
     return await bcrypt.compare(candidatePassword, userPassword)
 } 
@@ -81,7 +90,7 @@ userSchema.methods.createPasswordResetToken = function(){
 
     this.passwordResetExpires =Date.now()  +  10  * 60 * 1000;
     // we save data only in encrypted way
-    //console.log({ resetToken}, this.passwordResetToken)
+    console.log({ resetToken}, this.passwordResetToken)
     return resetToken
 }
 const User = mongoose.model('USER',  userSchema)
