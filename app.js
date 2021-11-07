@@ -5,30 +5,69 @@ const tourRouter  = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 const AppError = require('./utils/appError') 
 const globalErrorHandler =  require('./controllers/errorControler')
+
+
+/// security
+const rateLimit = require('express-rate-limit')
+const helmet = require('helmet')
+const mongoSanitize = require('express-mongo-sanitize')
+const xss = require('xss-clean')
+const hpp = require('hpp')
+
 const app = express();
 
 
 
 
 
+//1 ) Global Middleware
 
 
+//Set Security Http headers
+app.use(helmet())
+
+// Limit requests from same api
+const limiter = rateLimit({
+    max: 100,
+    windowMs:60 * 60 * 1000,
+    message: 'To man request from this IP, please try again in an hour' 
+})
+
+app.use('/api',limiter); // will apply all routes which start with /api
 
 //  middleware
 
+
+// development login
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));
 }
 
+// body parser, reading data from body into req.body
+app.use(express.json({limit: '10k'})) // we limit it to ten kilobyte
 
-app.use(express.json())
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize()) // removes dolar sign and etx
 
+// Data sanitization against XSS   
+app.use(xss()) // cleans javascript code in extracted  html
+
+
+// Prevent parameter pollution from query
+app.use(hpp({
+    whitelist: [
+        'duration', 'ratingQuantity', 'average', 'maxGroupSize', 'difficulty', 'price'
+    ]
+}))
+
+
+// serving static files
 app.use(express.static(`${__dirname}/public`))
 
 
 
 
-
+// Test middleware
 app.use((req, res, next)=>{
   req.requestTime = new Date().toISOString()
 //   console.log(req.headers)

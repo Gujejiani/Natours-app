@@ -47,6 +47,11 @@ const userSchema = new mongoose.Schema({
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    active: {
+        type: Boolean,
+        default: true,
+        select: false,       // not show in the output
+    }
 })
 
 userSchema.pre('save', async function(next){
@@ -93,6 +98,14 @@ userSchema.methods.createPasswordResetToken = function(){
     console.log({ resetToken}, this.passwordResetToken)
     return resetToken
 }
+
+userSchema.pre(/^find/, function(next){   // it will work with every query with find init  findAndDelete findAndUpdate for example
+    // this points to current query
+    console.log('works')
+  //  this.find({active: true})
+    this.find({active: {$ne: false} })
+    next()
+})
 const User = mongoose.model('USER',  userSchema)
 
 
