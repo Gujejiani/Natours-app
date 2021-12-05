@@ -2,7 +2,8 @@
 const mongoose = require('mongoose')
 const slugify = require('slugify')
 const validator = require('validator')
-const tourSchema = new mongoose.Schema({
+const User = require('./userModel')
+const tourSchema = new mongoose.Schema(   {
     name: {
         type: String,
         required: [true, 'tour most have a name'], //,  we can give error message with array second element 
@@ -79,18 +80,55 @@ const tourSchema = new mongoose.Schema({
     secretTour: {
         type: Boolean,
         default: false
-    }
+    },
+    startLocation: {
+       //GeoJSON 
+        type: {
+            type: String,
+            default: 'Point',
+            enum: ['Point']
+        },
+        coordinates: [Number],
+        address: String,
+        description: String
+    },
+    locations: [
+        {
+            type: {
+                type: String,
+                default: 'point',
+                enum: ['Point'],
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            day: Number
+        }
+    ],
+    guides: [
+        {type: mongoose.Schema.ObjectId,
+        ref: 'USER'
+        }
+    ]
+}, 
 
-}, {
+
+{
     // to use virtual property which will not be saved in database because we can easily calculate from  properties which we have already
     toJSON: {virtuals: true},
     toObject: {virturls: true} 
-})
+}
+)
 
 tourSchema.virtual('durationWeeks').get(function(){
     return +this.duration / 7
 })
-
+//Virtual populate
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField:  'tour',
+    localField: '_id'
+})
 
 // mongoose middleware
 // this function will run when we save tours data into database                       p.s we need normal function because of this keyword
@@ -100,15 +138,16 @@ tourSchema.pre('save', function(next){ //Document middleware  it runs before .sa
  next();
 })
 
-// tourSchema.pre('save', function(next){
-// console.log('we are saving document')
-// next()
+
+// Embedding document
+
+// tourSchema.pre('save', async function(next){
+//   const guidesPromises  =   this.guides.map(async id =>  User.findById(id))
+//  this.guides = await Promise.all(guidesPromises)
 // })
 
-// tourSchema.post('save', function(doc, next){
-//     console.log(doc)
-//     next();
-// })
+
+
 
 /// query middleware              this keyword will  now target current query and not current document
 // tourSchema.pre('find', function(next){
@@ -129,6 +168,18 @@ tourSchema.post(/^find/, function(docs, next){  // executing after  query search
 // console.log(docs);
 next()
 });
+
+tourSchema.pre(/^find/, function(next){
+    this.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt'
+    })
+    console.log('--------------------------------------------------------------------------- kk ')
+   
+    next()
+})
+
+
 
 // AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function(next){

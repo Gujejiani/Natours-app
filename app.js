@@ -5,7 +5,7 @@ const tourRouter  = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 const AppError = require('./utils/appError') 
 const globalErrorHandler =  require('./controllers/errorControler')
-
+const reviewRouter = require('./routes/reviewRoutes')
 
 /// security
 const rateLimit = require('express-rate-limit')
@@ -44,12 +44,14 @@ if(process.env.NODE_ENV === 'development'){
 }
 
 // body parser, reading data from body into req.body
-app.use(express.json({limit: '10k'})) // we limit it to ten kilobyte
+app.use(express.json({limit: '10mb'})) // we limit it to ten kilobyte
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize()) // removes dolar sign and etx
 
 // Data sanitization against XSS   
+
+
 app.use(xss()) // cleans javascript code in extracted  html
 
 
@@ -101,6 +103,7 @@ app.get('/', (req, res)=>{
 app.use('/api/v1/tours', tourRouter)
 
 app.use('/api/v1/users', userRouter)
+app.use('/api/v1/reviews', reviewRouter)
 // server started
 app.all('*', (req, res, next)=>{
 

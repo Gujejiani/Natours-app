@@ -1,6 +1,8 @@
 const catchAsync = require('../utils/catchAsync')
 const User = require('../models/userModel')
 const AppError = require('./../utils/appError')
+const factory = require('./handlerFactory')
+
 
 const filterObj = (obj, ...allowedFields) =>{
     const newObject = {}
@@ -12,24 +14,12 @@ const filterObj = (obj, ...allowedFields) =>{
 }
 
 
-exports.getAllUsers   = catchAsync(async (req, res, next)=>{
-  
-
-    //executed query
-   const users = await User.find();      // query.sort().select().skip()....
-
-    //send response
-    res.status(200).json({
-        status: 'success',
-        results: users.length,
-        data: {
-            users: users
-        }
-    })
-
-})
 
 
+exports.getMe = (req, res, next )=>{
+    req.params.id = req.user.id;
+    next()
+}
 
 exports.updateME =  catchAsync( async(req, res, next) => {
     // 1) Create error if user POSTs password data
@@ -60,24 +50,14 @@ exports.deleteME = catchAsync(async (req, res, next)=>{
 })
 
 
-exports.getUser = (req, res)=>{
-    res.json({
-        status: 'not yet complited man'
-    })
-}
+
 exports.createUser = (req, res)=>{
     res.json({
-        status: 'not yet complited man'
+        status: 'for it Please use Sign up '
     })
 }
-
-exports.updateUser = (req, res)=>{
-    res.json({
-        status: 'not yet complited man'
-    })
-}
-exports.deleteUser = (req, res)=>{
-    res.json({
-        status: 'not yet complited man'
-    })
-}
+//  Do  not update with this
+exports.updateUser = factory.updateOne(User)
+exports.deleteUser = factory.deleteOne(User)
+exports.getAllUsers   = factory.getAll(User)
+exports.getUser = factory.getOne(User)
