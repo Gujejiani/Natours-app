@@ -26,6 +26,11 @@ router.route('/tour-stats').get(tourController.getTourStats)
 router.route('/monthly-plan/:year').get(authController.protect, authController.restrictTo('admin, lead-guide', 'guide'),tourController.getMonthlyPlan)
 
 router.route('/top-5-cheap').get(tourController.aliasTopTours,tourController.getAllTours)
+
+
+// tours-distance?distance=233&center // query strings
+router.route('/tours-within/:distance/center/:latlng/:unit').post(tourController.getToursWithIn) // query params
+
 // Routes
 router.route('/').get( tourController.getAllTours).post(authController.protect,  authController.restrictTo('admin', 'lead-guide'),tourController.checkAddedTour,tourController.addTour)
 router.route('/:id').patch(authController.protect, authController.restrictTo('admin, lead-guide'), tourController.updateTour).delete(authController.protect, 

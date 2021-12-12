@@ -120,7 +120,7 @@ const tourSchema = new mongoose.Schema(   {
     toObject: {virturls: true} 
 }
 )
-
+tourSchema.index({startLocation: '2dsphere'})  // this start location should be indexed by 2dsphere where earth loc data locaited
 // tourSchema.index({price: 1})
  tourSchema.index({price: 1, ratingAverage: -1}) // query with index    created index for price and ratingAverage fields and combines in this case 
 tourSchema.index({slug:1 })
