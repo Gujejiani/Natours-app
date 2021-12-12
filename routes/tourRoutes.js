@@ -27,7 +27,7 @@ router.route('/monthly-plan/:year').get(authController.protect, authController.r
 
 router.route('/top-5-cheap').get(tourController.aliasTopTours,tourController.getAllTours)
 // Routes
-router.route('/').get( tourController.getAllTours).post(authController.protect, authController.restrictTo('admin, lead-guide'),tourController.checkAddedTour,tourController.addTour)
+router.route('/').get( tourController.getAllTours).post(authController.protect,  authController.restrictTo('admin', 'lead-guide'),tourController.checkAddedTour,tourController.addTour)
 router.route('/:id').patch(authController.protect, authController.restrictTo('admin, lead-guide'), tourController.updateTour).delete(authController.protect, 
     authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour).get(tourController.getTour)

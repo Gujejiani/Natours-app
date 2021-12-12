@@ -36,7 +36,8 @@ const tourSchema = new mongoose.Schema(   {
             default: 4.5,
             required: true,
             min: [1, 'rating muse  be above 1.0'],
-            max: [10, 'ratingAverage should be less than 1']
+            max: [10, 'ratingAverage should be less than 1'],
+            set:  val => Math.round(val *  10) / 10  // will run for Each time new value will be added on this field
     
     },
     ratingQuantity: {
@@ -120,6 +121,9 @@ const tourSchema = new mongoose.Schema(   {
 }
 )
 
+// tourSchema.index({price: 1})
+ tourSchema.index({price: 1, ratingAverage: -1}) // query with index    created index for price and ratingAverage fields and combines in this case 
+tourSchema.index({slug:1 })
 tourSchema.virtual('durationWeeks').get(function(){
     return +this.duration / 7
 })
