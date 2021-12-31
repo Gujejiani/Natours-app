@@ -6,7 +6,7 @@ const userRouter = require('./routes/userRoutes')
 const AppError = require('./utils/appError') 
 const globalErrorHandler =  require('./controllers/errorControler')
 const reviewRouter = require('./routes/reviewRoutes')
-
+const path = require('path')
 /// security
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
@@ -16,7 +16,13 @@ const hpp = require('hpp')
 
 const app = express();
 
+// define view engine
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views')) // we don't have to think if directory will have slash or not
 
+// serving static files
+// app.use(express.static(`${__dirname}/public`))
+app.use(express.static(path.join(__dirname, 'public')))
 
 
 
@@ -63,8 +69,6 @@ app.use(hpp({
 }))
 
 
-// serving static files
-app.use(express.static(`${__dirname}/public`))
 
 
 
