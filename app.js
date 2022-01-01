@@ -1,8 +1,8 @@
 
 const express = require('express');
 const morgan = require('morgan')
-const tourRouter  = require('./routes/tourRoutes')
-const userRouter = require('./routes/userRoutes')
+
+
 const AppError = require('./utils/appError') 
 const globalErrorHandler =  require('./controllers/errorControler')
 const reviewRouter = require('./routes/reviewRoutes')
@@ -13,7 +13,9 @@ const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
-
+const tourRouter  = require('./routes/tourRoutes')
+const userRouter = require('./routes/userRoutes')
+const viewRouter = require('./routes/viewRoutes')
 const app = express();
 
 // define view engine
@@ -83,10 +85,10 @@ app.use((req, res, next)=>{
 
 
 
-app.get('/', (req, res)=>{
-    res.send('page not found')
-    res.end()
-})
+// app.get('/', (req, res)=>{
+//     res.send('page not found')
+//     res.end()
+// })
 
 
 
@@ -103,11 +105,12 @@ app.get('/', (req, res)=>{
 // routes
 
 
-
+app.use('/', viewRouter)
 app.use('/api/v1/tours', tourRouter)
 
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/reviews', reviewRouter)
+
 // server started
 app.all('*', (req, res, next)=>{
 
