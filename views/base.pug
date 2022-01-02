@@ -4,6 +4,7 @@ html
     block head
       meta(charset='UTF-8')
       meta(name='viewport' content='width=device-width, initial-scale=1.0')
+      
       //- <link rel="stylesheet" href="css/style.css" />
       link(rel='stylesheet' href='/css/style.css')
       link(rel='shortcut icon' type='image/png' href='/img/favicon.png' )
@@ -28,5 +29,6 @@ html
     // FOOTER
     include _footer
 
-
+    script(src='https://unpkg.com/axios/dist/axios.min.js')
     script(src='/js/mapbox.js')
+    script(src='/js/login.js')(type='module')

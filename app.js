@@ -7,6 +7,7 @@ const AppError = require('./utils/appError')
 const globalErrorHandler =  require('./controllers/errorControler')
 const reviewRouter = require('./routes/reviewRoutes')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 /// security
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
@@ -16,6 +17,9 @@ const hpp = require('hpp')
 const tourRouter  = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 const viewRouter = require('./routes/viewRoutes')
+
+
+
 const app = express();
 
 // define view engine
@@ -33,7 +37,42 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 //Set Security Http headers
 app.use(helmet())
-
+const scriptSrcUrls = [
+    'https://api.tiles.mapbox.com/',
+    'https://api.mapbox.com/',
+    'https://cdnjs.cloudflare.com/',
+    'https://*.stripe.com/',
+    'https://js.stripe.com/',
+  ];
+  const styleSrcUrls = [
+    'https://api.mapbox.com/',
+    'https://api.tiles.mapbox.com/',
+    'https://fonts.googleapis.com/',
+  ];
+  const connectSrcUrls = [
+    'https://api.mapbox.com/',
+    'https://a.tiles.mapbox.com/',
+    'https://b.tiles.mapbox.com/',
+    'https://events.mapbox.com/',
+    'https://bundle.js:*',
+    'ws://127.0.0.1:*/',
+  ];
+  const fontSrcUrls = ['fonts.googleapis.com', 'fonts.gstatic.com'];
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: [],
+        connectSrc: ["'self'", ...connectSrcUrls],
+        scriptSrc: ["'self'", ...scriptSrcUrls],
+        styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+        workerSrc: ["'self'", 'blob:'],
+        frameSrc: ["'self'", 'https://*.stripe.com'],
+        objectSrc: [],
+        imgSrc: ["'self'", 'blob:', 'data:'],
+        fontSrc: ["'self'", ...fontSrcUrls],
+      },
+    })
+  );
 // Limit requests from same api
 const limiter = rateLimit({
     max: 100,
@@ -53,6 +92,8 @@ if(process.env.NODE_ENV === 'development'){
 
 // body parser, reading data from body into req.body
 app.use(express.json({limit: '10mb'})) // we limit it to ten kilobyte
+
+app.use(cookieParser())
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize()) // removes dolar sign and etx
@@ -79,7 +120,7 @@ app.use(hpp({
 app.use((req, res, next)=>{
   req.requestTime = new Date().toISOString()
 //   console.log(req.headers)
-
+    console.log(req.cookies)
     next();
 })
 

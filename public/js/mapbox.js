@@ -1,6 +1,10 @@
 console.log('hello fom client sucker')
 /* eslint-disable */
-const locations = JSON.parse(document.getElementById('map').dataset.locations)
+
+if(document.getElementById('map')?.dataset?.locations){
+    
+
+const locations = JSON.parse(document.getElementById('map')?.dataset?.locations)
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2FraGE3IiwiYSI6ImNreHg1c3FiNjRidGkyeXFrMjRnamoxZWUifQ.1znh8ROPtZw0rxKhfFoBKQ';
 var map = new mapboxgl.Map({
 container: 'map',
@@ -48,3 +52,4 @@ map.fitBounds(bounds,{
     }
  
 })
+}

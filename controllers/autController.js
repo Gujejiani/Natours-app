@@ -74,6 +74,8 @@ exports.protect = catchAsync( async (req, res, next)=>{
     let token
     if(req.headers.authorization  && req.headers.authorization.startsWith('Bearer')){
      token  = req.headers.authorization.split(' ')[1]
+    }else if(req.cookies.jwt){
+    token  = req.cookies.jwt
     }
     //console.log('works ', token)
  
@@ -212,3 +214,34 @@ exports.updatePassword = catchAsync( async (req, res, next) =>{
 //      token
 //  }) 
 // })
+
+
+
+// only for rendered pages
+exports.isLoggedIn = catchAsync( async (req, res, next)=>{
+
+    // 1) Getting token and check if it's there
+  
+    if(req.cookies.jwt){
+   let   token  = req.cookies.jwt
+ 
+    //console.log('works ', token)
+ 
+    
+    // 2) Verification token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+//   console.log(decoded)
+    // 3)  check  if user still exists
+ const freshUser  = await  User.findById(decoded.id);
+ if(!freshUser){
+     return next()
+ }
+    // 4) check if user changed password after the token was issued
+ if(freshUser.changedPasswordAfter(decoded.iat)){ // time   decoded returns { id: '614705be2662d13ee4c59a94', iat: 1634454540, exp: 1642230540 }  iat is a time stamp
+    return next()
+ }; 
+ res.locals.user = freshUser  // wao
+   return next();
+}
+next()
+})
