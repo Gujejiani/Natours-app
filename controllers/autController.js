@@ -34,6 +34,15 @@ const createSendToken = (user, statusCode, res) => {
         }
     })
 }
+
+
+exports.logout = ((req, res)=>{
+    res.cookie('jwt', 'loggedOut', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+    res.status(200).json({status: 'success'})
+})
 exports.signup = catchAsync(async  (req, res, next)=>{
     const newUser = await User.create({
         name: req.body.name,
@@ -95,6 +104,7 @@ exports.protect = catchAsync( async (req, res, next)=>{
     return next(new AppError('User recently changes password! please login again', 401))
  }; 
  req.user = freshUser
+ res.locals.user = freshUser  // wao
     next();
 })
 
@@ -168,6 +178,11 @@ exports.resetPassword= catchAsync ( async (req, res, next) =>{
 
 })
 
+
+
+
+
+
 exports.updatePassword = catchAsync( async (req, res, next) =>{
    
  // 1) Get user from collection
@@ -218,30 +233,38 @@ exports.updatePassword = catchAsync( async (req, res, next) =>{
 
 
 // only for rendered pages
-exports.isLoggedIn = catchAsync( async (req, res, next)=>{
+exports.isLoggedIn = async (req, res, next)=>{
 
     // 1) Getting token and check if it's there
-  
-    if(req.cookies.jwt){
-   let   token  = req.cookies.jwt
- 
-    //console.log('works ', token)
- 
-    
-    // 2) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-//   console.log(decoded)
-    // 3)  check  if user still exists
- const freshUser  = await  User.findById(decoded.id);
- if(!freshUser){
-     return next()
- }
-    // 4) check if user changed password after the token was issued
- if(freshUser.changedPasswordAfter(decoded.iat)){ // time   decoded returns { id: '614705be2662d13ee4c59a94', iat: 1634454540, exp: 1642230540 }  iat is a time stamp
-    return next()
- }; 
- res.locals.user = freshUser  // wao
-   return next();
-}
+  try{
+      
+      if(req.cookies.jwt){
+          
+     let token  = req.cookies.jwt
+   
+      //console.log('works ', token)
+   
+      
+      // 2) Verification token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  //   console.log(decoded)
+      // 3)  check  if user still exists
+   const freshUser  = await  User.findById(decoded.id);
+   if(!freshUser){
+       return next()
+   }
+      // 4) check if user changed password after the token was issued
+   if(freshUser.changedPasswordAfter(decoded.iat)){ // time   decoded returns { id: '614705be2662d13ee4c59a94', iat: 1634454540, exp: 1642230540 }  iat is a time stamp
+      return next()
+   }; 
+   res.locals.user = freshUser  // wao
+     return next();
+  }
+
+
+
+  }catch(err){
+    return  next()
+  }
 next()
-})
+}

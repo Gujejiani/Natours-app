@@ -8,33 +8,74 @@ const handleDuplicateFieldsDB = err => {
     const message = `duplicate key please use another name`
     return new apiError(message, 400)
 } 
- const sendErrorDev = (err, res)=>{
-    res.status(err.statusCode).json({
-        status: err.status,
-        error: err,
-        message: err.message,
-        stack: err.stack
-    })
- }
-const handleJWTError = err => new AppError('invalid token please login again', 401)
- sendErrorProduction = (err, res)=>{
-     // operational error
-     if(err.isOperational){
+ const sendErrorDev = (err,req, res)=>{
+     console.log(req)
+     //API
+     if(req.originalUrl.startsWith('/api')){
         res.status(err.statusCode).json({
             status: err.status,
+            error: err,
             message: err.message,
-            
+            stack: err.stack
         })
-        // programing error
      }else{
-         // 1Log eerrror
-        console.error('error', err)
-         // 2) send generic message
-         res.status(500).json({
-             status: 'error',
-             message: 'Something went very wrong'
-         })
-     }
+         //RENDERED WEBSITE
+            res.status(err.statusCode).render('error',{
+                title: 'Something went wrong',
+                msg: err.message
+            })
+     } 
+  
+ }
+
+
+const handleJWTError = err => new AppError('invalid token please login again', 401);
+
+
+
+ sendErrorProduction = (err,req, res)=>{
+    
+    //  API
+    if(req.originalUrl.startsWith('/api')){
+
+        
+        // operational error
+        if(err.isOperational){
+          return res.status(err.statusCode).json({
+               status: err.status,
+               message: err.message,
+               
+           })
+           // programing error
+        }else{
+            // 1Log eerrror
+           console.error('error', err)
+            // 2) send generic message
+         return   res.status(500).json({
+                status: 'error',
+                message: 'Something went very wrong'
+            })
+        }
+    }
+
+        // Rendered website
+         // operational error
+         if(err.isOperational){
+            res.status(err.statusCode).render('error',{
+                title: 'Something went wrong',
+                msg: err.message
+            })
+            // programing error
+         }else{
+             // 1Log eerrror
+            console.error('error', err)
+             // 2) send generic message
+             res.status(err.statusCode).render('error',{
+                title: 'Something went wrong',
+                msg: "Please try again later."
+            })
+         }
+    
   
  }
 
@@ -46,7 +87,7 @@ const handleJWTExpiredError = err => new AppError('your token has expired')
     // console.log(process.env.NODE_ENV)
     if(process.env.NODE_ENV === 'development'){
         console.log('dev')
-      sendErrorDev(err, res)
+      sendErrorDev(err,req, res)
     }else if(process.env.NODE_ENV == 'production'){
         console.log('we came')
         let error =  {...err}
@@ -56,7 +97,7 @@ const handleJWTExpiredError = err => new AppError('your token has expired')
         if(error.name === 'JsonWebTokenError') error = handleJWTError(error)
         if(error.name ===  'TokenExpiredError') error = handleJWTExpiredError(err)
         console.log('we came')
-        sendErrorProduction(error, res)
+        sendErrorProduction(error,req, res)
     }
     
 }
