@@ -11,7 +11,7 @@ const userPasswordForm = document.querySelector('.form-user-password')
 // Values
 
 
-const logoutBtn =document.querySelector('.nav__el--logout')
+const logoutBtn =document.querySelector('.nav__el--logout--s')
 
 
 if(form){
@@ -26,7 +26,8 @@ if(form){
 }
 
 if(logoutBtn){
-    logoutBtn.addEventListener('click',logout)
+    console.log('there we go')
+    logoutBtn.addEventListener('click', logout)
 }
 
 if(formUpdate){
@@ -34,8 +35,14 @@ if(formUpdate){
         e.preventDefault()
         const name = document.getElementById('name').value
         const email = document.getElementById('email--update').value
+        const photo = document.getElementById('photo').files[0]
+        const form = new FormData()
+        form.append('name',  name)
+        form.append('email',  email)
+        form.append('photo',  photo)
+        console.log(form)
         console.log('it calling')
-        updateSettings({name: name, email: email}, 'data')
+        updateSettings(form , 'data') // axios will recognize Form Data as an object
     })
 }
 

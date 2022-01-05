@@ -111,6 +111,7 @@ exports.protect = catchAsync( async (req, res, next)=>{
 
 exports.restrictTo = (...roles)=>{ 
     return (req, res, next)=>{
+      
         // roles ['admin', 'lead-guide']. role='user'  in that case our role doesn't include user, so we are not giving him permission
         if(!roles.includes(req.user.role)){ // we stored user in  req.user in the previous middleware named protect, you can see on line 63 :)  thank to your past version Kakha: 1.23.6
             return next(new AppError('you have not permission to perform this action', 403))
@@ -148,7 +149,7 @@ try{
         message: 'Token sent to email'
     })
 }catch(err){
-    console.log(err)
+    // console.log(err)
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
         await user.save({validateBeforeSave: false});

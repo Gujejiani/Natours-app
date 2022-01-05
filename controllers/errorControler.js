@@ -9,7 +9,7 @@ const handleDuplicateFieldsDB = err => {
     return new apiError(message, 400)
 } 
  const sendErrorDev = (err,req, res)=>{
-     console.log(req)
+    //  console.log(req)
      //API
      if(req.originalUrl.startsWith('/api')){
         res.status(err.statusCode).json({
@@ -20,6 +20,7 @@ const handleDuplicateFieldsDB = err => {
         })
      }else{
          //RENDERED WEBSITE
+        //  console.log(err)
             res.status(err.statusCode).render('error',{
                 title: 'Something went wrong',
                 msg: err.message

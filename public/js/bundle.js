@@ -9093,18 +9093,19 @@ var login = /*#__PURE__*/function () {
               }, 1500);
             }
 
-            _context.next = 11;
+            _context.next = 12;
             break;
 
           case 8:
             _context.prev = 8;
             _context.t0 = _context["catch"](1);
+            console.log('from hereee');
             (0, _alerts.showAlert)('error', _context.t0.response.data.message);
 
-          case 11:
+          case 12:
             ;
 
-          case 12:
+          case 13:
           case "end":
             return _context.stop();
         }
@@ -9120,40 +9121,44 @@ var login = /*#__PURE__*/function () {
 exports.login = login;
 
 var logout = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
     var res;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
+            e.preventDefault();
+            _context2.prev = 1;
+            _context2.next = 4;
             return (0, _axios.default)({
               method: 'GET',
               url: '/api/v1/users/logout'
             });
 
-          case 3:
+          case 4:
             res = _context2.sent;
+            console.log('hola');
             (0, _alerts.showAlert)('Log out successfully');
-            if (res.data.status === 'success') location.reload(true);
-            _context2.next = 11;
+            if (res.data.status === 'success') location.assign('/');
+            _context2.next = 15;
             break;
 
-          case 8:
-            _context2.prev = 8;
-            _context2.t0 = _context2["catch"](0);
+          case 10:
+            _context2.prev = 10;
+            _context2.t0 = _context2["catch"](1);
+            console.log("it's error");
+            console.log(_context2.t0);
             (0, _alerts.showAlert)('error', 'Error logging out! try again');
 
-          case 11:
+          case 15:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 8]]);
+    }, _callee2, null, [[1, 10]]);
   }));
 
-  return function logout() {
+  return function logout(_x3) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -9234,8 +9239,8 @@ var updateSettings = /*#__PURE__*/function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            url = type === 'password' ? 'http://localhost:3000/api/v1/users/updatePassword' : '/submit-user-data';
-            method = type === 'password' ? 'PATCH' : 'POST';
+            url = type === 'password' ? 'http://localhost:3000/api/v1/users/updatePassword' : 'http://localhost:3000/api/v1/users/updateMe';
+            method = 'PATCH';
             _context.next = 5;
             return (0, _axios.default)({
               method: method,
@@ -9296,7 +9301,7 @@ var form = document.querySelector('.form--login');
 var formUpdate = document.querySelector('.form-user-data');
 var userPasswordForm = document.querySelector('.form-user-password'); // Values
 
-var logoutBtn = document.querySelector('.nav__el--logout');
+var logoutBtn = document.querySelector('.nav__el--logout--s');
 
 if (form) {
   form.addEventListener('submit', function (e) {
@@ -9308,6 +9313,7 @@ if (form) {
 }
 
 if (logoutBtn) {
+  console.log('there we go');
   logoutBtn.addEventListener('click', _login.logout);
 }
 
@@ -9316,11 +9322,14 @@ if (formUpdate) {
     e.preventDefault();
     var name = document.getElementById('name').value;
     var email = document.getElementById('email--update').value;
+    var photo = document.getElementById('photo').files[0];
+    var form = new FormData();
+    form.append('name', name);
+    form.append('email', email);
+    form.append('photo', photo);
+    console.log(form);
     console.log('it calling');
-    (0, _updateSettings.updateSettings)({
-      name: name,
-      email: email
-    }, 'data');
+    (0, _updateSettings.updateSettings)(form, 'data'); // axios will recognize Form Data as an object
   });
 }
 
@@ -9400,7 +9409,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54189" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53271" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
