@@ -10,6 +10,7 @@ router.post('/signup', authController.signup)
 router.post('/login', authController.login)
 router.get('/logout', authController.logout)
 router.patch('/resetPassword/:token', authController.resetPassword)
+router.post('/forgotPassword', authController.forgotPassword)
 
 
 // Protect all routes after this middleware
