@@ -98,13 +98,13 @@ userSchema.methods.createPasswordResetToken = function(){
 
     this.passwordResetExpires =Date.now()  +  10  * 60 * 1000;
     // we save data only in encrypted way
-    console.log({ resetToken}, this.passwordResetToken)
+    // console.log({ resetToken}, this.passwordResetToken)
     return resetToken
 }
 
 userSchema.pre(/^find/, function(next){   // it will work with every query with find init  findAndDelete findAndUpdate for example
     // this points to current query
-    console.log('works')
+    // console.log('works')
   //  this.find({active: true})
     this.find({active: {$ne: false} })
     next()

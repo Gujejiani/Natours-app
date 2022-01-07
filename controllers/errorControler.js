@@ -90,14 +90,14 @@ const handleJWTExpiredError = err => new AppError('your token has expired')
         console.log('dev')
       sendErrorDev(err,req, res)
     }else if(process.env.NODE_ENV == 'production'){
-        console.log('we came')
+   
         let error =  {...err}
      
         if(error.name === 'CastError') error = handleCastErrorDB(error)
         if(error.code === 11000) error = handleDuplicateFieldsDB(error)
         if(error.name === 'JsonWebTokenError') error = handleJWTError(error)
         if(error.name ===  'TokenExpiredError') error = handleJWTExpiredError(err)
-        console.log('we came')
+      
         sendErrorProduction(error,req, res)
     }
     

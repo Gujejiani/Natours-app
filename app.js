@@ -9,7 +9,10 @@ const reviewRouter = require('./routes/reviewRoutes')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 /// security
-const rateLimit = require('express-rate-limit')
+const rateLimit = require('express-rate-limit');
+
+const compression = require('compression');
+
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
@@ -95,6 +98,9 @@ app.use('/api',limiter); // will apply all routes which start with /api
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));
 }
+
+app.use(compression())
+
 
 app.use(express.urlencoded({extended: true, limit:  '10kb'}))// parses data with form urlencoded form
 

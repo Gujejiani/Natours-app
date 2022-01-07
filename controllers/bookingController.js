@@ -39,10 +39,10 @@ exports.getCHeckoutSession = catchAsync(async (req, res, next)=>{
 
 exports.createBookingCheckout = catchAsync ( async(req, res, next)=>{
     // This is only temporary
-    console.log('createBooking')
+    // console.log('createBooking')
     const {tour, user, price} = req.query
   
-    console.log(tour, user, price)
+    // console.log(tour, user, price)
     if(!tour && !user && !price) return next();
 
     await Booking.create({

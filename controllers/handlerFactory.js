@@ -109,7 +109,7 @@ exports.createOne = Model => catchAsync(async (req, res, next)=>{
 
 
 exports.getOne = (Model, popOptions) =>  catchAsync(async(req, res, next)=>{
-    console.log(req.params.id)
+  
     //.populate('guides') 
   
 

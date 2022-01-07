@@ -30,7 +30,6 @@ sort(){
 }
 
 limiting(){
-    console.log('limit')
     //. 3) field limiting   http://localhost:3000/api/v1/tours?fields=name,duration,difficulty,price     in every case we don't need to send whole data to the client
     if(this.queryString.fields){
         const fields =  this.queryString.fields.split(',').join(' ');;
@@ -43,7 +42,6 @@ limiting(){
 }
 
 pagination(){
-    console.log('pag')
       // 4) pagination  http://localhost:3000/api/v1/tours?page=2&limit=10  //skip skips results despite value of how many to skip
       const page=  this.queryString.page * 1 || 1;
       const limit =this.queryString.limit * 1 || 100;

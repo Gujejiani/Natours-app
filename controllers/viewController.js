@@ -29,8 +29,8 @@ exports.getTour = catchAsync( async(req, res, next)=>{
     if(!tour){
         return next(new AppError('there is no tour with that name'))
     }
-    console.log('---------------------------------------LOG')
-    console.log(req.params)
+   
+   
     //3) render template using data from 1)
     res.status(200).set(
         'Content-Security-Policy',
@@ -80,7 +80,7 @@ exports.updateUserData  = catchAsync(async (req, res)=>{
 
 exports.getMyTours=  catchAsync(async (req, res, next)=>{
 //1) find all bookings
-console.log('I working for it')
+
     const bookings = await   Booking.find({user: req.user.id})
 
  // 2)  find tours with returned IDS

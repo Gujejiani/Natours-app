@@ -26,7 +26,7 @@ if(form){
 }
 
 if(logoutBtn){
-    console.log('there we go')
+ 
     logoutBtn.addEventListener('click', logout)
 }
 
@@ -40,15 +40,14 @@ if(formUpdate){
         form.append('name',  name)
         form.append('email',  email)
         form.append('photo',  photo)
-        console.log(form)
-        console.log('it calling')
+     
         updateSettings(form , 'data') // axios will recognize Form Data as an object
     })
 }
 
 
 if(userPasswordForm){
-    console.log('here we go')
+  
     userPasswordForm.addEventListener('submit', async e=>{
         e.preventDefault();
         document.querySelector('.btn--save-password').textContent ='Updating'
@@ -56,7 +55,7 @@ if(userPasswordForm){
         const password = document.getElementById('password').value
         const confirmPassword = document.getElementById('password-confirm').value
      
-        console.log('it calling')
+      
       await  updateSettings({currentPassword, password, confirmPassword}, 'password')
       document.querySelector('.btn--save-password').textContent='Save Password'
       document.getElementById('password-current').value  =''
@@ -74,11 +73,11 @@ if(mapBox){
 
 }
 
-console.log(bookBtn)
+
 if(bookBtn){
-    console.log('added')
+    
     bookBtn.addEventListener('click', e=>{
-        console.log('clicked')
+      
         e.target.textContent= 'Processing...'
         const {tourId} = e.target.dataset;
 

@@ -76,7 +76,7 @@ exports.aliasTopTours =(req, res, next) =>{
 
 
 exports.checkAddedTour = (req, res, next)=>{
-   console.log('checks')
+
     if(!req.body?.name || !req.body?.price){
         return res.status(404).json({
             status: 'fail',
@@ -206,12 +206,12 @@ exports.getToursWithIn = catchAsync(async (req, res, next)=> {
     const {distance, latlng, unit} = req.params
    const [lat, lng] = latlng.split(',')
     const radius = unit ===  'mi' ? distance / 3963.2: distance  / 6378.1
-    console.log('here we go')
+  
    if(!lat || !lng){
        next(new AppError('Please provide latitude and longitude in the format lat,lng'))
    }
 
-   console.log(distance, lat, lng, unit)
+//    console.log(distance, lat, lng, unit)
    const tours = await Tour.find({
        startLocation:  {$geoWithin: {$centerSphere: [[lng, lat], radius]}}   // finds documents by geometry
    })
