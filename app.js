@@ -17,7 +17,7 @@ const hpp = require('hpp')
 const tourRouter  = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 const viewRouter = require('./routes/viewRoutes')
-
+  const bookingRouter = require('./routes/bookingRoutes')
 
 
 const app = express();
@@ -36,7 +36,17 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 
 //Set Security Http headers
-app.use(helmet())
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "example.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+
 const scriptSrcUrls = [
     'https://api.tiles.mapbox.com/',
     'https://api.mapbox.com/',
@@ -58,17 +68,17 @@ const scriptSrcUrls = [
     'ws://127.0.0.1:*/',
   ];
   const fontSrcUrls = ['fonts.googleapis.com', 'fonts.gstatic.com'];
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
-        baseUri: ["'self'"],
-        fontSrc: ["'self'", 'https:', 'http:', 'data:'],
-        scriptSrc: ["'self'", 'https:', 'http:', 'blob:'],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https:', 'http:'],
-      },
-    })
-  );
+  // app.use(
+  //   helmet.contentSecurityPolicy({
+  //     directives: {
+  //       defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
+  //       baseUri: ["'self'"],
+  //       fontSrc: ["'self'", 'https:', 'http:', 'data:'],
+  //       scriptSrc: ["'self'", 'https:', 'http:', 'blob:'],
+  //       styleSrc: ["'self'", "'unsafe-inline'", 'https:', 'http:'],
+  //     },
+  //   })
+  // );
 // Limit requests from same api
 const limiter = rateLimit({
     max: 100,
@@ -149,7 +159,7 @@ app.use('/api/v1/tours', tourRouter)
 
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/reviews', reviewRouter)
-
+app.use('/api/v1/booking', bookingRouter)
 // server started
 app.all('*', (req, res, next)=>{
 

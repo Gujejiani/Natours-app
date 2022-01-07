@@ -1,11 +1,10 @@
 const fs = require('fs')
+
 const catchAsync = require('../utils/catchAsync')
-const APIFeatures = require('../utils/apiFeatures')
 const Tour = require('../models/tourModel')
-// const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
-const Tours  =  require('../models/tourModel')
 const AppError = require('../utils/appError')
 const factory = require('./handlerFactory')
+
 const multer = require('multer');
 const sharp = require('sharp')
 // so cool before sending data we check if id is valid for all routes delete and add or update by id
@@ -18,7 +17,8 @@ const sharp = require('sharp')
 //     // }
 //     next()
 // }
-
+// const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
+const Tours  =  require('../models/tourModel')
 const multerStorage = multer.memoryStorage(); // image will be stored as a buffer
 
 

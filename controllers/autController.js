@@ -241,7 +241,7 @@ exports.updatePassword = catchAsync( async (req, res, next) =>{
 
 // only for rendered pages
 exports.isLoggedIn = async (req, res, next)=>{
-
+    console.log('here we go')
     // 1) Getting token and check if it's there
   try{
       
@@ -264,6 +264,8 @@ exports.isLoggedIn = async (req, res, next)=>{
    if(freshUser.changedPasswordAfter(decoded.iat)){ // time   decoded returns { id: '614705be2662d13ee4c59a94', iat: 1634454540, exp: 1642230540 }  iat is a time stamp
       return next()
    }; 
+   console.log(freshUser)
+   console.log('here we go')
    res.locals.user = freshUser  // wao
      return next();
   }

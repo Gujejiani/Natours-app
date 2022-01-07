@@ -2,7 +2,7 @@ import { login, logout} from './login'
 
 import {displayMap} from './mapbox'
 import {updateSettings} from './updateSettings'
-
+import {bookTour} from './stripe'
 // Dom Elements
 const mapBox = document.getElementById('map')
 const form = document.querySelector('.form--login')
@@ -12,7 +12,7 @@ const userPasswordForm = document.querySelector('.form-user-password')
 
 
 const logoutBtn =document.querySelector('.nav__el--logout--s')
-
+const bookBtn = document.getElementById('book-tour')
 
 if(form){
     form.addEventListener('submit', e=>{
@@ -72,4 +72,16 @@ if(mapBox){
     const locations = JSON.parse(mapBox?.dataset?.locations)
     displayMap(locations)
 
+}
+
+console.log(bookBtn)
+if(bookBtn){
+    console.log('added')
+    bookBtn.addEventListener('click', e=>{
+        console.log('clicked')
+        e.target.textContent= 'Processing...'
+        const {tourId} = e.target.dataset;
+
+        bookTour(tourId)
+    })
 }
