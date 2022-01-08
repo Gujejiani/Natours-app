@@ -37,7 +37,7 @@ const server =app.listen(port, ()=>{
 
 process.on('unhandledRejection', err=>{
     console.log('unhandled REJECTION')
-    console.log(err.name. err.message)
+    console.log(err.name. err)
     server.close(()=>{
         process.exit(1)
     })
