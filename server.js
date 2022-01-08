@@ -31,11 +31,22 @@ mongoose.connect(DB,{
 
 // console.log(process.env)
 const port = process.env.PORT
-app.listen(port, ()=>{
+const server =app.listen(port, ()=>{
     console.log('server started ' + port)
 })
 
+process.on('unhandledRejection', err=>{
+    console.log('unhandled REJECTION')
+    console.log(err.name. err.message)
+    server.close(()=>{
+        process.exit(1)
+    })
+})
 
-
-
+process.on('SIGTERM', ()=>{
+    console.log('SIGTERM RECEIVED. Shutting down gracefully 😣')
+    server.close(()=>{
+        console.log(' Process terminated!')
+    })
+})
 // test
