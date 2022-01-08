@@ -95,3 +95,10 @@ res.status(200).render('overview', {
 })
 
 })
+
+
+exports.alerts = (req, res, next)=>{
+    const {alert} = req.query
+    if(alert === 'booking')
+    res.locals.alert = 'Your Booking was successful! if your booking doesn\'t show up immediately please come back later';
+}
