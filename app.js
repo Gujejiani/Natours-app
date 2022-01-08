@@ -21,7 +21,7 @@ const tourRouter  = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 const viewRouter = require('./routes/viewRoutes')
   const bookingRouter = require('./routes/bookingRoutes')
-
+const cors = require('cors')
 
 const app = express();
 
@@ -35,10 +35,17 @@ app.set('views', path.join(__dirname, 'views')) // we don't have to think if dir
 // app.use(express.static(`${__dirname}/public`))
 app.use(express.static(path.join(__dirname, 'public')))
 
-
+// api.natours.com, front-end natours.com
+// app.use(cors({
+//   origin: 'https://www.natours.com'
+// }))
 
 //1 ) Global Middleware
+// implement cors
+app.use(cors())
+// Access-Control-Allow-Origin * 
 
+app.options('*', cors()) // for complex request  like patch delete  send cookie etc
 
 //Set Security Http headers
 app.use(
