@@ -76,7 +76,7 @@ try{
    event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET)
 }catch(err){
     console.log(err)
-    return res.status(400).send(`webhook error: ${err.message}`)
+    return res.status(400).send(`webhook error`)
     }
 
     if(event.type ==='checkout.session.completed'){
