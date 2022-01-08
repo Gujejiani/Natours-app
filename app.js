@@ -25,6 +25,8 @@ const viewRouter = require('./routes/viewRoutes')
 
 const app = express();
 
+app.enable('trust proxy')
+
 // define view engine
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, 'views')) // we don't have to think if directory will have slash or not
