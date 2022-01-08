@@ -21,6 +21,7 @@ const tourRouter  = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 const viewRouter = require('./routes/viewRoutes')
   const bookingRouter = require('./routes/bookingRoutes')
+  const bookingController = require('./controllers/bookingController')
 const cors = require('cors')
 
 const app = express();
@@ -99,6 +100,18 @@ const limiter = rateLimit({
 })
 
 app.use('/api',limiter); // will apply all routes which start with /api
+
+
+
+app.post('/webhook-checkout', express.raw({type: 'application/json'}),bookingController.webhookCheckout)
+
+
+
+
+
+
+
+
 
 //  middleware
 
