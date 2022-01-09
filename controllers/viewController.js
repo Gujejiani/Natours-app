@@ -11,7 +11,10 @@ exports.getOverview =  catchAsync(async (req, res)=>{
 
     // 3) render that template using tour data from 1
 
-    res.status(200).render('overview', {
+    res.status(200).set(
+        'Content-Security-Policy',
+        "default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;"
+      ).render('overview', {
         title: 'All Tours',
         tours
     })
@@ -100,7 +103,10 @@ exports.getMyTours=  catchAsync(async (req, res, next)=>{
 
  const tours = await Tour.find({_id: {$in: toursIDs}}) // selects matches of all the array elements
 
-res.status(200).render('overview', {
+res.status(200).set(
+    'Content-Security-Policy',
+    "connect-src 'self' https://cdnjs.cloudflare.com"
+).render('overview', {
     title: 'My tours',
     tours
 })

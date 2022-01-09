@@ -20,14 +20,18 @@ if(form){
         e.preventDefault();
         const email = document.getElementById('email').value
         const password = document.getElementById('password').value
-        const confirmPassword = document.getElementById('confirm-password').value
-        const name = document.getElementById('user-name').value
-        const photo = document.getElementById('photo').files[0]
-        const signUpBtn = document.getElementById('sign-up');
-        if(!confirmPassword){
+   
+        const confirm = document.getElementById('confirm-password')
+        if(!confirm){
             console.log('login ing')
             login(email, password)
         }else{
+            const name = document.getElementById('user-name').value
+        
+            const confirmPassword = confirm.value
+            const photo = document.getElementById('photo').files[0]
+            const signUpBtn = document.getElementById('sign-up');
+
             const form = new FormData()
             form.append('name',  name)
             form.append('email',  email)
