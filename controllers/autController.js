@@ -21,7 +21,7 @@ const createSendToken = (user, statusCode, req, res) => {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true
     }
-    if(req.secure || req.headers('x-forwarded-proto'==='https') ) cookieOptions.secure = true; // heroku specific req.headers('x-forwarded-proto'==='https')
+    if(!process.env.NODE_ENV !=='development'|| req.secure || req?.headers('x-forwarded-proto'==='https') ) cookieOptions.secure = true; // heroku specific req.headers('x-forwarded-proto'==='https')
 
     // remove password from the output
     user.password = undefined
@@ -51,7 +51,8 @@ exports.signup = catchAsync(async  (req, res, next)=>{
         password: req.body.password,
         confirmPassword: req.body.confirmPassword,
         passwordChangedAt: req.body.passwordChangedAt,
-        role: req?.body?.role
+        role: req?.body?.role,
+        photo: req?.file?.filename
     });
     const url = `${req.protocol}://${req.get('host')}/me`;
     console.log(url)

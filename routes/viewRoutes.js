@@ -18,6 +18,7 @@ authController.isLoggedIn, viewsController.getOverview)
 router.get('/tours/:slug',authController.protect, authController.isLoggedIn,viewsController.getTour )
 
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm)
+router.get('/sign-up',  viewsController.doSignUp)
 
 router.get('/me',authController.protect, viewsController.getAccount)
 

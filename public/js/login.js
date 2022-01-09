@@ -22,6 +22,25 @@ export const login = async (email, password) => {
         showAlert('error',  err.response.data.message);
     };
 };
+export const signUp = async (data) => {
+    // const {name, email, password, confirmPassword,  passwordChangedAt, role='user' } = data;
+    try {
+        const res = await axios({
+            method: 'POST',
+            url: '/api/v1/users/signup',
+            data
+        });
+       if(res.data.status ==='success'){
+        showAlert('success','We are glad to see you with us!')
+           window.setTimeout(()=>{
+               location.assign('/')
+           }, 1500)
+       }
+ 
+    } catch (err) {
+        showAlert('error',  err.response.data.message);
+    };
+};
  
 
 export const  logout = async (e)=>{
@@ -32,7 +51,7 @@ export const  logout = async (e)=>{
                 url: '/api/v1/users/logout',
             })
         
-            showAlert('Log out successfully')
+            showAlert('success', 'Log out successfully')
             if(res.data.status==='success') location.assign('/')
 
     }catch(err){

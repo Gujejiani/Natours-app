@@ -1,4 +1,4 @@
-import { login, logout} from './login'
+import { login,signUp, logout} from './login'
 
 import {displayMap} from './mapbox'
 import {updateSettings} from './updateSettings'
@@ -15,13 +15,34 @@ const userPasswordForm = document.querySelector('.form-user-password')
 const logoutBtn =document.querySelector('.nav__el--logout--s')
 const bookBtn = document.getElementById('book-tour')
 
-if(form){
+if(form){ 
     form.addEventListener('submit', e=>{
         e.preventDefault();
         const email = document.getElementById('email').value
         const password = document.getElementById('password').value
+        const confirmPassword = document.getElementById('confirm-password').value
+        const name = document.getElementById('user-name').value
+        const photo = document.getElementById('photo').files[0]
+        const signUpBtn = document.getElementById('sign-up');
+        if(!confirmPassword){
+            console.log('login ing')
+            login(email, password)
+        }else{
+            const form = new FormData()
+            form.append('name',  name)
+            form.append('email',  email)
+            form.append('password',  password)
+            form.append('confirmPassword', confirmPassword)
+            form.append('photo',  photo)
+            form.append('role',  'user')
+            form.append('signUp', true)
+            if(signUpBtn){
+                signUpBtn.textContent="Processing..."
+            }
+
+            signUp(form)
+        }
        
-        login(email, password)
     })
     
 }
