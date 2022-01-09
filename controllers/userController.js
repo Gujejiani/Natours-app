@@ -41,7 +41,7 @@ exports.uploadUserPhoto = upload.single('photo')
 
 
 exports.resizeUserPhoto = catchAsync( async(req, res, next)=>{
-    if(!req.file || !req.file.filename) return next();
+    if(!req.file) return next();
     console.log('body ',req.body.signUp)
     req.file.filename= `${ !req.body.signUp? req.user.id: Math.floor(Math.random() * 1000) + req.body.name }-${Date.now()}.jpeg`
    await sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({quality: 90}).toFile(`public/img/users/${req.file.filename}`)
